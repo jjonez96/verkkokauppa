@@ -1,44 +1,69 @@
 "use client";
-import { useState, useEffect } from "react";
 
-const Products = () => {
-  const [products, setProducts] = useState([]);
+import React, { useState } from "react";
+import Products from "./Products";
+import Orders from "./Orders";
+import Customers from "./Customers";
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
+const Page = () => {
+  const [selectedTab, setSelectedTab] = useState("products");
 
-  const fetchProducts = async () => {
-    try {
-      const response = await fetch("http://localhost:8000/products");
-      const data = await response.json();
-      setProducts(data);
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    }
+  const handleTabChange = (tab) => {
+    setSelectedTab(tab);
   };
 
   return (
     <div>
-      <h1>Products</h1>
-      <ul>
-        {products.map((product) => (
-          <li key={product._id}>
-            <h2>{product.product}</h2>
-            <p>Category: {product.category}</p>
-            <p>Stock: {product.stock}</p>
-            <p>Location: {product.location}</p>
-            <p>Description: {product.description}</p>
-            <p>Price: ${product.price}</p>
-            <p>
-              Availability:{" "}
-              {product.availability ? "Available" : "Not available"}
-            </p>
-          </li>
-        ))}
-      </ul>
+      <div className="tabs">
+        <button
+          className={selectedTab === "products" ? "active" : ""}
+          onClick={() => handleTabChange("products")}
+        >
+          Products
+        </button>
+        <button
+          className={selectedTab === "orders" ? "active" : ""}
+          onClick={() => handleTabChange("orders")}
+        >
+          Orders
+        </button>
+        <button
+          className={selectedTab === "customers" ? "active" : ""}
+          onClick={() => handleTabChange("customers")}
+        >
+          Customers
+        </button>
+      </div>
+      <div className="tab-content">
+        {selectedTab === "products" && <Products />}
+        {selectedTab === "orders" && <Orders />}
+        {selectedTab === "customers" && <Customers />}
+      </div>
+      <style jsx>{`
+        .tabs {
+          display: flex;
+          justify-content: center;
+          margin-bottom: 20px;
+        }
+        .tabs button {
+          background-color: transparent;
+          border: none;
+          cursor: pointer;
+          margin: 0 10px;
+          padding: 10px;
+          font-size: 16px;
+          outline: none;
+        }
+        .tabs button.active {
+          border-bottom: 2px solid black;
+        }
+        .tab-content {
+          border: 1px solid #ddd;
+          padding: 20px;
+        }
+      `}</style>
     </div>
   );
 };
 
-export default Products;
+export default Page;
